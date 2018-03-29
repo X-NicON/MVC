@@ -1,6 +1,10 @@
 <?php
 class authController extends Controller {
 
+  function __construct(){
+    $this->onlyauth = false;
+  }
+
   function init($args) {
   	$this->auth = new Auth();
     $error = '';

@@ -1,10 +1,14 @@
 <?php
 class logoutController extends Controller {
+
+	function __construct(){
+		$this->onlyauth = false;
+	}
+
 	public function init($args){
-		$this->auth = new AuthModel();
+		$this->auth = new Auth();
 		$this->auth->logout();
 
-		Utils::redirect_to('./');
+		Utils::Redirect('./');
 	}
 }
-?>
