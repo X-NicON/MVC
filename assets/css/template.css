@@ -1,0 +1,58 @@
+
+body.page-auth {
+	line-height: 1.5;
+	color: #263238;
+	background-color: #e4e5e6;
+	text-align: center;
+}
+
+body.page-auth .container {
+  padding-top: 120px;
+  padding-bottom: 40px;
+}
+
+body.page-auth .btn {
+  outline:0;
+  border:none;
+}
+
+body.page-auth .btn:focus {
+  outline:0;
+}
+
+.form-signin {
+  background: #fff;
+  display: inline-block;
+  padding: 30px 40px 40px;
+  margin: 60px auto 0;
+  border: 1px solid #cfd8dc;
+  text-align: left;
+	width: 480px;
+}
+
+.form-signin .form-signin-heading,
+.form-signin {
+  margin-bottom: 15px;
+}
+
+.form-signin-heading {
+	font-size: 28px;
+}
+
+.color-expired{
+  background-color: #FFE3E3;
+}
+
+.notice-task:target {
+  border: 5px solid #9c27b0;
+}
+
+.task-success, .task-success a {
+  text-decoration:line-through;
+  color: #999;
+}
+
+.task-success:hover, .task-success:hover a  {
+  text-decoration:none;
+  color: #333;
+}
