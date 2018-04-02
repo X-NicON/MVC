@@ -4,7 +4,7 @@
     <nav class="navbar navbar-static-top">
       <div class="container">
         <div class="navbar-header">
-          <a href="/" class="navbar-brand">Цены</a>
+          <a href="/" class="navbar-brand">Logo</a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
@@ -23,8 +23,6 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a href="/auth/logout/">Выйти</a></li>
         </ul>
-
       </div>
-      <!-- /.container-fluid -->
     </nav>
   </header>
