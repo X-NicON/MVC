@@ -1,6 +1,5 @@
 <?php
 class Db {
-
 	protected static $db;
 
 	public static function getDb() {
@@ -21,16 +20,16 @@ class Db {
 		return self::$db;
 	}
 
-	public static function query($sql, $attrs = array()) {
+	public static function query($sql, $attrs = []) {
 		if(!is_array($attrs)){
-			$attrs = array($attrs);
+			$attrs = [$attrs];
 		}
+
+		$attrs = filter_var_array($attrs, FILTER_SANITIZE_SPECIAL_CHARS);
 
 	  $query = Db::getDb()->prepare($sql);
 	  $query->execute($attrs);
 
 		return $query;
 	}
-
 }
-?>
