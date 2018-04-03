@@ -3,8 +3,19 @@ class Utils {
 
 //Получить текущею дату, основываясь на заднном часовом поясе
 //возвращает - YYYY-MM-DD H:i:s
-public static function getCurrentDate() {
-	return date('Y-m-d H:i:s');
+public static function getCurrentDate($time = true) {
+	if($time){
+		return date('Y-m-d H:i:s');
+	}
+	return date('Y-m-d');
+}
+
+public static function checkDateFormat($date) {
+	if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
+		return true;
+	}else{
+		return false;
+	}
 }
 
 //Формирует json строку с определёнными параметрами
