@@ -32,7 +32,7 @@ class Auth {
 		$email = $_COOKIE['ulgn'];
 		$hash  = $_COOKIE['uhash'];
 
-		$user = Db::query("SELECT * FROM users WHERE email = ?", $login)->fetch();
+		$user = Db::query("SELECT * FROM users WHERE email = ?", $email)->fetch();
 
 		if(!empty($user->hash) && !empty($hash) && $hash == $user->hash) {
 			return true;
