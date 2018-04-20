@@ -2,13 +2,12 @@
 class Auth {
 
 	function login($login, $pass) {
-
-		$user = Db::query("SELECT * FROM users WHERE login = ?", $login)->fetch();
-		$verify = password_verify($pass, $user->pass_hash);
+		$user = Db::query("SELECT * FROM users WHERE email = ?", $login)->fetch();
+		$verify = password_verify($pass, $user->pass);
 
 		if($verify) {
-			setcookie('ulgn', $user->login, time()+432000, '/');
-			setcookie('uhash', $user->auth_hash, time()+432000, '/');
+			setcookie('ulgn', $user->email, time()+432000, '/');
+			setcookie('uhash', $user->hash, time()+432000, '/');
 		}
 
 		return $verify;
@@ -16,10 +15,10 @@ class Auth {
 
 	function signup($login, $pass) {
 
-		$password = password_hash($pass, PASSWORD_DEFAULT);
-		$hash = password_hash(uniqid('hsh', true), PASSWORD_DEFAULT);
+		$password = password_hash($pass, PASSWORD_BCRYPT);
+		$hash = Utils::getToken(64);
 
-		$create = Db::query("INSERT INTO users (login,pass_hash,auth_hash) VALUES(?,?,?)", array($login, $password, $hash));
+		$create = Db::query("INSERT INTO users (email,pass,hash) VALUES(?,?,?)", array($login, $password, $hash));
 
 		return true;
 	}
@@ -30,12 +29,12 @@ class Auth {
 			return false;
 		}
 
-		$login = $_COOKIE['ulgn'];
+		$email = $_COOKIE['ulgn'];
 		$hash  = $_COOKIE['uhash'];
 
-		$user = Db::query("SELECT * FROM users WHERE login = ?", $login)->fetch();
+		$user = Db::query("SELECT * FROM users WHERE email = ?", $login)->fetch();
 
-		if(!empty($user->auth_hash) && !empty($hash) && $hash == $user->auth_hash) {
+		if(!empty($user->hash) && !empty($hash) && $hash == $user->hash) {
 			return true;
 		}
 
@@ -50,10 +49,10 @@ class Auth {
 	}
 
 	static function getCurrentUserId() {
-		return Db::query("SELECT id FROM users WHERE login = ?", $_COOKIE['ulgn'])->fetchColumn();
+		return Db::query("SELECT id FROM users WHERE email = ?", $_COOKIE['ulgn'])->fetchColumn();
 	}
 
 	static function getCurrentUserInfo() {
-		return Db::query("SELECT * FROM users WHERE login = ?", $_COOKIE['ulgn'])->fetch();
+		return Db::query("SELECT * FROM users WHERE email = ?", $_COOKIE['ulgn'])->fetch();
 	}
 }
