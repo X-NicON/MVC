@@ -25,11 +25,20 @@ class Db {
 			$attrs = [$attrs];
 		}
 
-		$attrs = filter_var_array($attrs, FILTER_SANITIZE_SPECIAL_CHARS);
-
 	  $query = Db::getDb()->prepare($sql);
 	  $query->execute($attrs);
 
 		return $query;
 	}
+
+	public static function filter($var) {
+		if(is_array($var)){
+			$var = filter_var_array($var, FILTER_SANITIZE_SPECIAL_CHARS);
+		}else{
+			$var = filter_var($var, FILTER_SANITIZE_SPECIAL_CHARS);			
+		}
+
+		return $var;
+	}
+
 }
