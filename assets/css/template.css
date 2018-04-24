@@ -1,44 +1,30 @@
-body.page-auth {
-	line-height: 1.5;
-	color: #263238;
-	background-color: #e4e5e6;
-	text-align: center;
-}
+/* auth page */
 
-body.page-auth .container {
-  padding-top: 120px;
+body.page-auth {
+  padding-top: 100px;
   padding-bottom: 40px;
 }
 
-body.page-auth .btn {
-  outline:0;
-  border:none;
-}
-
-body.page-auth .btn:focus {
-  outline:0;
-}
-
 .form-signin {
-  background: #fff;
-  display: inline-block;
-  padding: 30px 40px 40px;
-  margin: 60px auto 0;
-  border: 1px solid #cfd8dc;
-  text-align: left;
-	width: 480px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.form-signin .form-signin-heading,
-.form-signin {
-  margin-bottom: 15px;
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
 }
 
-.form-signin-heading {
-	font-size: 28px;
+.form-signin input {
+  border-radius: 0;
 }
 
-.color-expired{
+/* -auth page */
+
+.color-expired {
   background-color: #FFE3E3;
 }
 
