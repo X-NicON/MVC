@@ -8,9 +8,7 @@
   <link rel="icon" href="/assets/img/favicon.png">
 
   <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/assets/css/adminlte.min.css" rel="stylesheet">
-  <link href="/assets/css/skin-green-light.min.css" rel="stylesheet">
+  <link href="/assets/css/bootstrap4-material-lite.css" rel="stylesheet">
   <link href="/assets/css/template.css" rel="stylesheet">
-
 </head>
-<body class="skin-green-light layout-top-nav">
+<body>
