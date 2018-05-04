@@ -1,121 +1,157 @@
 <?php
 class Utils {
 
-	//Получить текущею дату, основываясь на заднном часовом поясе
-	//возвращает - YYYY-MM-DD H:i:s
-	public static function getCurrentDate($time = true) {
-		if($time){
-			return date('Y-m-d H:i:s');
-		}
-		return date('Y-m-d');
-	}
+  //Получить текущею дату, основываясь на заднном часовом поясе
+  //возвращает - YYYY-MM-DD H:i:s
+  public static function getCurrentDate($time = true) {
+    if($time){
+      return date('Y-m-d H:i:s');
+    }
+    return date('Y-m-d');
+  }
 
-	public static function checkDateFormat($date) {
-		if(preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date)) {
-			return true;
-		}else{
-			return false;
-		}
-	}
+  public static function validateDate($date, $format = 'Y-m-d H:i:s') {
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) == $date;
+  }
 
-	//Формирует json строку с определёнными параметрами
-	//возвращает - string json
-	public static function jsonEncode($array){
-		return json_encode($array, JSON_UNESCAPED_UNICODE);
-	}
+  //Формат указывается для входящей даты
+  //Возвращает - 9.09.2017
+  public static function formatDate($string, $format = "d.m.Y", $fromFormat = 'Y-m-d') {
+    $date = DateTime::createFromFormat($fromFormat, $string);
+    return $date->format($format);
+  }
 
-	//Разбирает строку json с определёнными параметрами
-	//возвращает - array
-	public static function jsonDecode($string) {
-		return json_decode($string, true);
-	}
+  public static function convertToDbDate($date) {
+    if(is_string($date)) {
+      //datetime
+      if(self::validateDate($date, 'd.m.Y H:i')) {
+        return self::formatDate($date, 'Y-m-d H:i:00', 'd.m.Y H:i');
+        //only date
+      }elseif(self::validateDate($date, 'd.m.Y')) {
+        return self::formatDate($date, 'Y-m-d', 'd.m.Y');
+        //only time
+      }elseif(self::validateDate($date, 'H:i')) {
+        return self::formatDate($date, 'H:i:00', 'H:i');
+      }
+    }
 
-	//Убирает все возможные символы, отставляя формат 7xxxxxxxxxxx, в случае неудачи false
-	//Возвращает - string|false
-	//Проверка на количество символов и начинается с 7
-	public static function filterPhone($str) {
-		$str = preg_replace('/\D/', '', $str);
-		if(strlen($str) == 10) {
-			$str = '7'.$str;
-		}elseif(strlen($str) != 11) {
-			return false;
-		}
+    return $date;
+  }
 
-		$firstletter = substr($str, 0, 1);
-		if($firstletter == '8') {
-			$str = substr_replace($str, '7', 0, 1);
-		}elseif($firstletter != 7) {
-			return false;
-		}
+  public static function convertFromDbDate($date) {
+    if(is_string($date)) {
+      //datetime
+      if(self::validateDate($date, 'Y-m-d H:i:s')) {
+        return self::formatDate($date, 'd.m.Y H:i', 'Y-m-d H:i:s');
+        //only date
+      }elseif(self::validateDate($date, 'Y-m-d')) {
+        return self::formatDate($date, 'd.m.Y', 'Y-m-d');
+        //only time
+      }elseif(self::validateDate($date, 'H:i:s')) {
+        return self::formatDate($date, 'H:i', 'H:i:s');
+      }
+    }
 
-		return $str;
-	}
+    return $date;
+  }
 
-	//Приводит строку 7xxxxxxxxxxx к виду +7 (xxx) xxx-xx-xx
-	//Возвращает - string
-	public static function formatPhone($phone) {
-		return preg_replace("/([0-9]{1})([0-9]{3})([0-9]{3})([0-9]{4})/", "8 ($2) $3-$4", $phone);
-	}
+  //Формирует json строку с определёнными параметрами
+  //возвращает - string json
+  public static function jsonEncode($array){
+    return json_encode($array, JSON_UNESCAPED_UNICODE);
+  }
 
-	//Проверка email на валидность
-	//Возвращает - true|false
-	public static function verifyEmail($string) {
-		if(filter_var($string, FILTER_VALIDATE_EMAIL)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+  //Разбирает строку json с определёнными параметрами
+  //возвращает - array
+  public static function jsonDecode($string) {
+    return json_decode($string, true);
+  }
 
-	//Формат указывается для входящей даты
-	//Возвращает - 9.09.2017
-	public static function formatDate($string, $format = "d.m.Y", $fromFormat = 'Y-m-d') {
-		$date = DateTime::createFromFormat($fromFormat, $string);
-		return $date->format($format);
-	}
+  //Убирает все возможные символы, отставляя формат 7xxxxxxxxxxx, в случае неудачи false
+  //Возвращает - string|false
+  //Проверка на количество символов и начинается с 7
+  public static function filterPhone($str) {
+    $str = preg_replace('/\D/', '', $str);
+    if(strlen($str) == 10) {
+      $str = '7'.$str;
+    }elseif(strlen($str) != 11) {
+      return false;
+    }
 
-	//Возвращает - Мужской|Женский|Не указан
-	public static function formatSex($type) {
-		if(is_null($type)) return 'Не указан';
-		if($type == 0) return 'Женский';
-		if($type == 1) return 'Мужской';
-	}
+    $firstletter = substr($str, 0, 1);
+    if($firstletter == '8') {
+      $str = substr_replace($str, '7', 0, 1);
+    }elseif($firstletter != 7) {
+      return false;
+    }
 
-	public static function formatStr($str) {
-		return ucfirst(mb_strtolower($str));
-	}
+    return $str;
+  }
 
-	public static function Redirect($url) {
-	  header('Location: '.$url);
-	  die();
-	}
+  //Приводит строку 7xxxxxxxxxxx к виду +7 (xxx) xxx-xx-xx
+  //Возвращает - string
+  public static function formatPhone($phone) {
+    return preg_replace("/([0-9]{1})([0-9]{3})([0-9]{3})([0-9]{4})/", "8 ($2) $3-$4", $phone);
+  }
 
-	static function crypto_rand_secure($min, $max) {
-	  $range = $max - $min;
-	  if ($range < 1) return $min; // not so random...
-	  $log = ceil(log($range, 2));
-	  $bytes = (int) ($log / 8) + 1; // length in bytes
-	  $bits = (int) $log + 1; // length in bits
-	  $filter = (int) (1 << $bits) - 1; // set all lower bits to 1
-	  do {
-	      $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
-	      $rnd = $rnd & $filter; // discard irrelevant bits
-	  } while ($rnd > $range);
-	  return $min + $rnd;
-	}
+  //Проверка email на валидность
+  //Возвращает - true|false
+  public static function verifyEmail($string) {
+    if(filter_var($string, FILTER_VALIDATE_EMAIL)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-	static function getToken($length = 64) {
-	  $token = "";
-	  $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	  $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
-	  $codeAlphabet.= "0123456789";
-	  $max = strlen($codeAlphabet)-1;
+  //Возвращает - Мужской|Женский|Не указан
+  public static function formatSex($type) {
+    if(is_null($type)) return 'Не указан';
+    if($type == 0) return 'Женский';
+    if($type == 1) return 'Мужской';
+  }
 
-	  for($i=0; $i < $length; $i++) {
-	    $token .= $codeAlphabet[self::crypto_rand_secure(0, $max)];
-	  }
+  public static function formatStr($str) {
+    if(!empty($str)) {
+      $str = mb_strtolower($str);
+      $fc = mb_strtoupper(mb_substr($str, 0, 1));
+      return $fc.mb_substr($str, 1);
+    }
+    return $str;
+  }
 
-	  return $token;
-	}
+  public static function Redirect($url) {
+    header('Location: '.$url);
+    die();
+  }
+
+  static function crypto_rand_secure($min, $max) {
+    $range = $max - $min;
+    if ($range < 1) return $min; // not so random...
+    $log = ceil(log($range, 2));
+    $bytes = (int) ($log / 8) + 1; // length in bytes
+    $bits = (int) $log + 1; // length in bits
+    $filter = (int) (1 << $bits) - 1; // set all lower bits to 1
+    do {
+        $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
+        $rnd = $rnd & $filter; // discard irrelevant bits
+    } while ($rnd > $range);
+    return $min + $rnd;
+  }
+
+  static function getToken($length = 64) {
+    $token = "";
+    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
+    $codeAlphabet.= "0123456789";
+    $max = strlen($codeAlphabet)-1;
+
+    for($i=0; $i < $length; $i++) {
+      $token .= $codeAlphabet[self::crypto_rand_secure(0, $max)];
+    }
+
+    return $token;
+  }
 
 }
