@@ -11,4 +11,4 @@
   <link href="/assets/css/bootstrap4-material-lite.css" rel="stylesheet">
   <link href="/assets/css/template.css" rel="stylesheet">
 </head>
-<body>
+<body class="view-<?php echo $template; ?>">

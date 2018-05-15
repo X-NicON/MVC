@@ -134,13 +134,13 @@ class Utils {
     $bits = (int) $log + 1; // length in bits
     $filter = (int) (1 << $bits) - 1; // set all lower bits to 1
     do {
-        $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
-        $rnd = $rnd & $filter; // discard irrelevant bits
+      $rnd = hexdec(bin2hex(random_bytes($bytes)));
+      $rnd = $rnd & $filter; // discard irrelevant bits
     } while ($rnd > $range);
     return $min + $rnd;
   }
 
-  static function getToken($length = 64) {
+  static function getSimpleToken($length = 32) {
     $token = "";
     $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
@@ -152,6 +152,10 @@ class Utils {
     }
 
     return $token;
+  }
+
+  static function getToken($length = 32) {
+    return bin2hex(random_bytes(ceil($length/2)));
   }
 
 }
