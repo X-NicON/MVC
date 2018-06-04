@@ -1,8 +1,7 @@
 /* auth page */
 
-body.view-auth {
-  padding-top: 100px;
-  padding-bottom: 40px;
+body.view-auth .form-signin {
+  margin-top: 100px;
 }
 
 .form-signin {

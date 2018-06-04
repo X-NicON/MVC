@@ -879,7 +879,7 @@ fieldset[disabled] .checkbox label {
 .select2-container--default .select2-results__option {
   transition: background-color;
   transition-duration: 300ms;
-  padding: 10px 17px;
+  padding: 10px 40px 10px 17px;
 }
 
 .select2-container--default .select2-results__option[aria-selected=true] {
@@ -963,3 +963,13 @@ fieldset[disabled] .checkbox label {
 }
 
 /* -Circle btn Actions */
+
+.alert {
+	border-radius: 0;
+}
+
+.alert-danger {
+  background-color: rgba(244,67,54,.7);
+  border-color: transparent;
+  color: #fff;
+}

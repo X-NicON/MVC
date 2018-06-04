@@ -22,7 +22,7 @@ class Utils {
     return $date->format($format);
   }
 
-  public static function convertToDbDate($date) {
+  public static function formatToYMD($date) {
     if(is_string($date)) {
       //datetime
       if(self::validateDate($date, 'd.m.Y H:i')) {
@@ -39,7 +39,7 @@ class Utils {
     return $date;
   }
 
-  public static function convertFromDbDate($date) {
+  public static function formatFromYMD($date) {
     if(is_string($date)) {
       //datetime
       if(self::validateDate($date, 'Y-m-d H:i:s')) {
@@ -75,24 +75,44 @@ class Utils {
     $str = preg_replace('/\D/', '', $str);
     if(strlen($str) == 10) {
       $str = '7'.$str;
-    }elseif(strlen($str) != 11) {
+    } elseif(strlen($str) != 11) {
       return false;
     }
 
     $firstletter = substr($str, 0, 1);
     if($firstletter == '8') {
       $str = substr_replace($str, '7', 0, 1);
-    }elseif($firstletter != 7) {
+    } elseif($firstletter != 7) {
       return false;
     }
 
     return $str;
   }
 
+  public static function validatePhone($phone) {
+    $phone = self::filterPhone($phone);
+
+    $invalid = [
+      '70000000000',
+      '79999999999'
+    ];
+
+    if($phone === false || in_array($phone, $invalid)) {
+      return false;   
+    }
+
+    return true;
+  }
+
   //Приводит строку 7xxxxxxxxxxx к виду +7 (xxx) xxx-xx-xx
   //Возвращает - string
   public static function formatPhone($phone) {
-    return preg_replace("/([0-9]{1})([0-9]{3})([0-9]{3})([0-9]{4})/", "8 ($2) $3-$4", $phone);
+    return preg_replace("/([0-9]{1})([0-9]{3})([0-9]{3})([0-9]{2})([0-9]{2})/", "8 ($2) $3-$4-$5", $phone);
+  }
+
+  public static function formatHidePhone($phone) {
+    $phone = self::formatPhone($phone);
+    return substr($phone,0,7).'****'.substr($phone,-5);
   }
 
   //Проверка email на валидность
@@ -105,12 +125,13 @@ class Utils {
     }
   }
 
-  //Возвращает - Мужской|Женский|Не указан
-  public static function formatSex($type) {
-    if(is_null($type)) return 'Не указан';
-    if($type == 0) return 'Женский';
-    if($type == 1) return 'Мужской';
-  }
+	static function hideEmail($str) {
+		$mail = explode('@', $str);
+		if(strlen($mail[0]) < 5) {
+		  return substr($mail[0],0,1).'***@'.$mail[1];
+		}
+	  return substr($mail[0],0,2).'***'.substr($mail[0],-2).'@'.$mail[1];
+	}
 
   public static function formatStr($str) {
     if(!empty($str)) {
@@ -140,6 +161,10 @@ class Utils {
     return $min + $rnd;
   }
 
+  static function getToken($length = 32) {
+    return bin2hex(random_bytes(ceil($length/2)));
+  }
+
   static function getSimpleToken($length = 32) {
     $token = "";
     $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -154,8 +179,20 @@ class Utils {
     return $token;
   }
 
-  static function getToken($length = 32) {
-    return bin2hex(random_bytes(ceil($length/2)));
+  static function getNumsToken($length = 6) {
+    $token = "";
+    $codeAlphabet = "0123456789";
+    $max = strlen($codeAlphabet)-1;
+
+    for($i=0; $i < $length; $i++) {
+      $token .= $codeAlphabet[self::crypto_rand_secure(0, $max)];
+    }
+
+    return $token;
+  }
+
+  static function hideStr($str) {
+    return substr($str,0,4) . '****'.substr($str, -4);
   }
 
 }
