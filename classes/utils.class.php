@@ -142,6 +142,10 @@ class Utils {
     return $str;
   }
 
+  static function hideStr($str) {
+    return substr($str,0,4) . '****'.substr($str, -4);
+  }
+
   public static function Redirect($url) {
     header('Location: '.$url);
     die();
@@ -189,10 +193,6 @@ class Utils {
     }
 
     return $token;
-  }
-
-  static function hideStr($str) {
-    return substr($str,0,4) . '****'.substr($str, -4);
   }
 
 }

@@ -1,13 +1,20 @@
 <?php
 class Auth {
+	private static $userInfo = null;
 
 	function login($login, $pass) {
-		$user = Db::query("SELECT * FROM users WHERE email = ?", $login)->fetch();
-		$verify = password_verify($pass, $user->pass);
+		$verify = false;
+		self::$userInfo = Db::query("SELECT * FROM users WHERE email = ?", $login)->fetch();
 
-		if($verify) {
-			setcookie('ulgn', $user->email, time()+432000, '/');
-			setcookie('uhash', $user->hash, time()+432000, '/');
+		if (!empty(self::$userInfo)) {
+			$verify = password_verify($pass, $user->pass);
+
+			if($verify) {
+				setcookie('ulgn', $user->email, time()+432000, '/');
+				setcookie('uhash', $user->hash, time()+432000, '/');
+				$_COOKIE['ulgn'] = $user->email;
+				$_COOKIE['uhash'] = $user->hash;
+			}
 		}
 
 		return $verify;
@@ -32,9 +39,9 @@ class Auth {
 		$email = $_COOKIE['ulgn'];
 		$hash  = $_COOKIE['uhash'];
 
-		$user = Db::query("SELECT * FROM users WHERE email = ?", $email)->fetch();
+		self::$userInfo = Db::query("SELECT * FROM users WHERE email = ?", $email)->fetch();
 
-		if(!empty($user->hash) && !empty($hash) && $hash == $user->hash) {
+		if(!empty(self::$userInfo->hash) && !empty($hash) && $hash == self::$userInfo->hash) {
 			return true;
 		}
 
@@ -49,10 +56,16 @@ class Auth {
 	}
 
 	static function getCurrentUserId() {
-		return Db::query("SELECT id FROM users WHERE email = ?", $_COOKIE['ulgn'])->fetchColumn();
+		if(isset(self::$userInfo->id)) {
+			return self::$userInfo->id;
+		}
+		return false;
 	}
 
 	static function getCurrentUserInfo() {
-		return Db::query("SELECT * FROM users WHERE email = ?", $_COOKIE['ulgn'])->fetch();
+		if(!empty(self::$userInfo)){
+			return self::$userInfo;
+		}
+		return false;
 	}
 }
