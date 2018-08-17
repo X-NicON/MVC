@@ -1,19 +1,21 @@
 <?php
 class Routing {
+
 	public static function execute() {
 		$controllerName = 'main';
-		$path = trim($_SERVER['REQUEST_URI'], '/');
-    if (($position = strpos($path, '?')) !== FALSE) {
-    	$path = substr($path, 0, $position);
-    }
+
+		$path = explode('?',$_SERVER['REQUEST_URI'])[0];
+		$homepath = rtrim(parse_url(Config::HOME_URL,PHP_URL_PATH),'/');
+		$path = trim(str_replace($homepath,'',$path), '/');
 		$routes = explode('/', $path);
 
 		$route_args = [];
 		if (!empty($routes[0])) {
 			$controllerName = $routes[0];
-			unset($routes[0]);
-			if(!empty($routes))
+			if(isset($routes[1])) {
+				unset($routes[0]);
 				$route_args = array_values($routes);
+			}
 		}
 
 		$controllerName = strtolower($controllerName).'Controller';
@@ -27,7 +29,7 @@ class Routing {
 			/* Auth */
 			if($controller->onlyauth == true) {
 			  if(Auth::isLogged() === false) {
-			  	Utils::Redirect('/auth/');
+			  	Utils::Redirect($homepath.'/auth/');
 			  }
 			}
 			/* Auth */
@@ -38,5 +40,9 @@ class Routing {
 			$controller = new error404Controller();
 			$controller->init();
 		}
+	}
+
+	public static function home() {
+		return rtrim(Config::HOME_URL,'/').'/';
 	}
 }
