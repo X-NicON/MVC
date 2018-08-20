@@ -12,20 +12,20 @@ class authController extends Controller {
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			if(isset($_POST['login'], $_POST['pass'])) {
         if($this->auth->login($_POST['login'], $_POST['pass'])) {
-        	Utils::Redirect('/');
+        	Utils::Redirect(Routing::home());
         }else{
           $error = 'Ошибка авторизации';
         }
       }
     }
 
-    if(isset($args[0]) && $args[0] == 'logout'){
+    if(isset($args[0]) && $args[0] == 'logout') {
       $this->auth->logout();
-      Utils::Redirect('/auth/');
+      Utils::Redirect(Routing::home().'auth/');
     }
 
-    if($this->auth->isLogged()){
-    	Utils::Redirect('/');
+    if($this->auth->isLogged()) {
+    	Utils::Redirect(Routing::home());
     }
 
     $this->view = new View('auth', array(
